@@ -1,16 +1,29 @@
-var reader = require('reader.js');
-var parser = require('parser.js');
+var reader        = require('./modules/reader.js');
+var accountNumber = require('./modules/accountNumber.js');
 
-var printAccount = function(account, valid){
+var args          = process.argv.slice(2);
+
+var printAccount = function(account){
   var output = "";
-  account.forEach(function(number){
+  account.numbers.forEach(function(number){
     output += number.output.toString();
   });
 
-  valid = valid ? "" : "ERR";
-  console.log(output, valid);
+  console.log(output, account.status);
 };
 
-reader.file("document.txt", function(accounts){
-  parser.process(accounts, printAccount);
+
+//var done     = function(value){ console.log("DONE", done); };
+//var error    = function(value){ console.log("ERROR", error); };
+//var progress = function(value){ console.log("PROGRESS", progress); };
+
+reader.file(args[0], function(accounts){
+  accountNumber.verify(accounts, printAccount);// function(value){ console.log(value); });
+  //var promise = accountNumber.verify(accounts);
+
+  //promise.then(function(value){
+    //console.log("DONE", value);
+  //}, function(value){
+    //console.log("PROGRESS", value);
+  //});
 });
