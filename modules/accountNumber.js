@@ -8,7 +8,17 @@ module.exports = {
       if(!account.status){ account.status = account.valid ? "" : "ERR" }
 
       if(account.status === "ERR" || account.status === "ILL" ){
-        parser.guess(account, this.calculateChecksum, cb);
+        if(account.options){
+          if(account.options.length > 1){
+            account.status = "AMB";
+          }else{
+            if(account.options.length === 1){
+              account.numbers = account.options[0];
+            }
+          }
+        }else{
+          parser.guess(account, this.calculateChecksum, cb);
+        }
       }else{
         cb(account);
       }

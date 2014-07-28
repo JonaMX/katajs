@@ -18,10 +18,10 @@ module.exports = {
       position = i/3%9;
 
       if(!accounts[counter])                  { accounts[counter] = { numbers: [] } };
-      if(!accounts[counter].numbers[position]){ accounts[counter].numbers[position] = { ascii: [], output: '?' } };
+      if(!accounts[counter].numbers[position]){ accounts[counter].numbers[position] = { ascii: "" } };
 
-      accounts[counter].numbers[position].ascii.push(data.splice(0, 3));
-      if(accounts[counter].numbers[8] && accounts[counter].numbers[8].ascii.length === 3){
+      accounts[counter].numbers[position].ascii+= data.splice(0, 3).join("");
+      if(accounts[counter].numbers[8] && accounts[counter].numbers[8].ascii.length === 9){
         data.splice(0, 27);
         counter++;
       }
