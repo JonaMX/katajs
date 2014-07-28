@@ -12,18 +12,6 @@ var printAccount = function(account){
   console.log(output, account.status);
 };
 
-
-//var done     = function(value){ console.log("DONE", done); };
-//var error    = function(value){ console.log("ERROR", error); };
-//var progress = function(value){ console.log("PROGRESS", progress); };
-
 reader.file(args[0], function(accounts){
-  accountNumber.verify(accounts, printAccount);// function(value){ console.log(value); });
-  //var promise = accountNumber.verify(accounts);
-
-  //promise.then(function(value){
-    //console.log("DONE", value);
-  //}, function(value){
-    //console.log("PROGRESS", value);
-  //});
+  accountNumber.verify(accounts, printAccount);
 });
