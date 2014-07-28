@@ -1,38 +1,46 @@
 var parser  = require('./parser.js');
 
+function needGuessing(account){
+  return ((account.status === "ILL" || account.status === "ERR") && (account.ill >= 1 || account.ill == 0));
+}
+
 module.exports = {
 
-  verify: function(accounts, cb){
-    var callback = function(account){
-      account.valid = this.calculateChecksum(account);
-      if(!account.status){ account.status = account.valid ? "" : "ERR" }
+  verify: function(account, cb){
+    if(!account.status){
+      account.status = this.calculateChecksum(account) ? "" : "ERR";
+    }
 
-      if(account.status === "ERR" || account.status === "ILL" ){
-        if(account.options){
-          if(account.options.length > 1){
-            account.status = "AMB";
-          }else{
-            if(account.options.length === 1){
-              account.numbers = account.options[0];
-            }
-          }
+    var options = [];
+
+    if(needGuessing(account)){
+      parser.guess(account, function(option){
+        if(this.calculateChecksum(option)){ options.push(option); }
+      }.bind(this), function(account){
+        account.options = options;
+
+        if(account.options.length === 1){
+          account.numbers = account.options[0].numbers;
+          account.status  = "";
         }else{
-          parser.guess(account, this.calculateChecksum, cb);
+          account.status  = account.options.length === 0 ? account.status : "AMB";
         }
-      }else{
-        cb(account);
-      }
-    }.bind(this);
+      });
+    }
 
-    accounts.forEach(function(account){
-      parser.account(account, callback);
-    });
+    cb(account);
+  },
+
+  parse: function(accounts, cb){
+    parser.accounts(accounts, cb);
   },
 
   calculateChecksum: function(account){
     var checksum = 0;
+    var output = "";
     account.numbers.forEach(function(number, index){
       checksum += parseInt(number.output * (9 - index));
+      output += number.output.toString();
     });
 
     return !(checksum % 11);

@@ -4,14 +4,14 @@ var accountNumber = require('./modules/accountNumber.js');
 var args          = process.argv.slice(2);
 
 var printAccount = function(account){
-  var output = "";
-  account.numbers.forEach(function(number){
-    output += number.output.toString();
-  });
+  console.log(account.output, account.status);
 
-  console.log(output, account.status);
+  //if(account.options){ console.log(account.options); }
 };
 
 reader.file(args[0], function(accounts){
-  accountNumber.verify(accounts, printAccount);
+  accountNumber.parse(accounts, function(account){
+    accountNumber.verify(account, printAccount);
+  });
 });
+
