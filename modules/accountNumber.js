@@ -1,9 +1,5 @@
 var parser  = require('./parser.js');
 
-function needGuessing(account){
-  return ((account.status === "ILL" || account.status === "ERR") && (account.ill >= 1 || account.ill == 0));
-}
-
 module.exports = {
 
   verify: function(account, cb){
@@ -13,7 +9,7 @@ module.exports = {
 
     var options = [];
 
-    if(needGuessing(account)){
+    if(this.needGuessing(account)){
       parser.guess(account, function(option){
         if(this.calculateChecksum(option)){ options.push(option); }
       }.bind(this), function(account){
@@ -37,12 +33,16 @@ module.exports = {
 
   calculateChecksum: function(account){
     var checksum = 0;
-    var output = "";
+    var output   = "";
     account.numbers.forEach(function(number, index){
       checksum += parseInt(number.output * (9 - index));
-      output += number.output.toString();
+      output   += number.output.toString();
     });
 
     return !(checksum % 11);
+  },
+
+  needGuessing: function(account){
+    return ((account.status === "ILL" || account.status === "ERR") && (account.ill >= 1 || account.ill == 0));
   }
 }

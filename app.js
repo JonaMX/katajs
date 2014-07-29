@@ -5,8 +5,6 @@ var args          = process.argv.slice(2);
 
 var printAccount = function(account){
   console.log(account.output, account.status);
-
-  //if(account.options){ console.log(account.options); }
 };
 
 reader.file(args[0], function(accounts){
